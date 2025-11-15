@@ -26,6 +26,17 @@ class Model:
         :return: lista di tuple --> (nome dell'impianto, media), es. (Impianto A, 123)
         """
         # TODO
+        results=[]
+        for impianto in self._impianti:
+            consumi=impianto.get_consumi()
+            kwh_mese=[]
+            for consumo in consumi:
+                if consumo.data.month==mese:
+                    kwh_mese.append(consumo.kwh)
+            media=sum(kwh_mese)/len(kwh_mese)
+            results.append((impianto.nome, media))
+        return results
+
 
     def get_sequenza_ottima(self, mese:int):
         """
@@ -54,4 +65,13 @@ class Model:
         :return: un dizionario: {id_impianto: [kwh_giorno1, ..., kwh_giorno7]}
         """
         # TODO
+        consumi_settimana={}
+        for impianto in self._impianti:
+            consumi=impianto.get_consumi()
+            consumi_giornalieri=[]
+            for c in consumi:
+                if c.data.month==mese and c.data.day>0 and c.data.day<=7:
+                    consumi_giornalieri.append(c.kwh)
+            consumi_settimana[impianto.id]=consumi_giornalieri
+        return consumi_settimana
 
